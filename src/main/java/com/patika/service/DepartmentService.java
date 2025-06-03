@@ -6,6 +6,8 @@ import com.patika.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -64,5 +66,22 @@ private final DepartmentRepository departmentRepository;
 
 
         departmentRepository.deleteById(id);
+    }
+
+    public List<DepartmentDto> getAll() {
+      List<Department> list = departmentRepository.findAll();
+      List<DepartmentDto> dtoList = new ArrayList<>();
+         if (!list.isEmpty()){
+             for (Department department : list){
+                 DepartmentDto dto = new DepartmentDto();
+                 dto.setId(department.getId());
+                 dto.setDepartmentCode(department.getDepartmentCode());
+                 dto.setDepartmentName(department.getDepartmentName());
+                 dto.setCreatedAt(department.getCreatedAt());
+                 dtoList.add(dto);
+             }
+         }
+
+      return dtoList;
     }
 }

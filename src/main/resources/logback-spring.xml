@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Konsola yazan appender -->
+    <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Log formatı: zaman, thread adı, seviyeyi renkli göster, logger adı, mesaj ve yeni satır -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+            <!-- Konsolda ANSI renklerini aktif eder (renkli log için) -->
+            <enableAnsi>true</enableAnsi>
+        </encoder>
+    </appender>
+
+    <!-- Dosyaya yazan appender (rolling: günlük log dosyası oluşturur ve dosya değiştirir) -->
+    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Logların yazılacağı ana dosya yolu -->
+        <file>logs/app.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Her gün yeni log dosyası oluşturur, isim tarih içerir -->
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- En fazla 30 gün boyunca eski log dosyalarını saklar -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <!-- Dosyaya yazılacak log formatı: tarih, thread, seviye, logger adı ve mesaj -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger: uygulamadaki tüm logları kapsar -->
+    <!-- level="INFO" => INFO ve üzeri (WARN, ERROR) seviyeler loglanır -->
+    <root level="INFO">
+        <!-- Root logları hem konsola hem dosyaya gönderilir -->
+        <appender-ref ref="ConsoleAppender" />
+        <appender-ref ref="FileAppender" />
+    </root>
+
+    <!-- Sadece 'com.patika' paketindeki loglar için logger ayarı -->
+    <!-- level="INFO" => com.patika paketi için INFO ve üzeri seviyeler loglanır -->
+    <!-- additivity="false" => loglar root'a iletilmez, sadece burada tanımlanan appenderlara yazılır -->
+    <logger name="com.patika" level="INFO" additivity="false">
+        <!-- com.patika için loglar hem konsola hem dosyaya yazılır -->
+        <appender-ref ref="ConsoleAppender" />
+        <appender-ref ref="FileAppender" />
+    </logger>
+
+</configuration>
