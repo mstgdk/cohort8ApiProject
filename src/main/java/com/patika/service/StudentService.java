@@ -18,14 +18,15 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final ConnectionRespository connectionRespository;
     private final DepartmentRepository departmentRepository;
-    //private final StudentMapper studentMapper;
+    private final StudentMapper studentMapper;
 
-    public StudentService(StudentRepository studentRepository, ConnectionRespository connectionRespository, DepartmentRepository departmentRepository) {
+    public StudentService(StudentRepository studentRepository, ConnectionRespository connectionRespository, DepartmentRepository departmentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
         this.connectionRespository = connectionRespository;
         this.departmentRepository = departmentRepository;
 
-        //this.studentMapper = studentMapper;
+
+        this.studentMapper = studentMapper;
     }
 
     public void save(StudentDto dto) {
@@ -35,13 +36,13 @@ public class StudentService {
             throw new ConflictException(String.format(ErrorMessage.RESOURCE_ALREADY_EXISTS_EXCEPTION, dto.getConnectionId()));
         }
 
-        Student student = new Student();
+     /*   Student student = new Student();
         student.setFirstName(dto.getFirstName());
         student.setLastName(dto.getLastName());
         student.setGender(dto.getGender());
-        student.setBirthDate(dto.getBirthDate());
+        student.setBirthDate(dto.getBirthDate());*/
 
-        //Student student =studentMapper.toStudent(dto);
+        Student student =studentMapper.toStudent(dto);
 
         //connection
 
