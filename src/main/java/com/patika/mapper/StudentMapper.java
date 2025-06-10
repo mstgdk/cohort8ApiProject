@@ -13,4 +13,9 @@ public interface StudentMapper {
     @Mapping(source = "connectionId", target = "connection.id")
     @Mapping(source = "departmentId", target = "department.id")
     Student toStudent(StudentDto studentDto);
+
+    @Mapping(source = "connection.id", target = "connectionId")
+    @Mapping(source = "department.id", target = "departmentId")
+    StudentDto toStudentDto(Student student);
+
 }
