@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class Student extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,5 +41,9 @@ public class Student {
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "conneciton_id", unique = true)
     private Connection connection;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "student_id")
+    private Set<ImageFile> iamges;
 
 }

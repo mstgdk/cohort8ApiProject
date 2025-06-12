@@ -1,9 +1,12 @@
 package com.patika.service;
 
+import com.filter.student.StudentFilter;
+import com.filter.student.StudentSpecification;
 import com.patika.dto.request.StudentDto;
 import com.patika.dto.request.StudentWithConnectionDto;
 import com.patika.entity.Connection;
 import com.patika.entity.Department;
+import com.patika.entity.ImageFile;
 import com.patika.entity.Student;
 import com.patika.enums.StudentAndInstructorStatus;
 import com.patika.exception.ConflictException;
@@ -18,20 +21,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
     private final ConnectionRespository connectionRespository;
     private final DepartmentRepository departmentRepository;
     private final StudentMapper studentMapper;
+    private final ImageFileService imageFileService;
 
-    public StudentService(StudentRepository studentRepository, ConnectionRespository connectionRespository, DepartmentRepository departmentRepository, StudentMapper studentMapper) {
+    public StudentService(StudentRepository studentRepository, ConnectionRespository connectionRespository, DepartmentRepository departmentRepository, StudentMapper studentMapper, ImageFileService imageFileService) {
         this.studentRepository = studentRepository;
         this.connectionRespository = connectionRespository;
         this.departmentRepository = departmentRepository;
-
-
         this.studentMapper = studentMapper;
+        this.imageFileService = imageFileService;
     }
 
     public void save(StudentDto dto) {
@@ -110,7 +116,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void saveStudentWithConnection(StudentWithConnectionDto dto) {
+    public void saveStudentWithConnection(StudentWithConnectionDto dto, String imageId) {
         if (connectionRespository.existsByEmail(dto.getEmail())){
             throw  new ConflictException(String.format(ErrorMessage.RESOURCE_ALREADY_EXISTS_EXCEPTION,dto.getEmail()));
         }
@@ -133,6 +139,17 @@ public class StudentService {
                 () -> new ResourceNotFoundException(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION)
         );
         student.setDepartment(department);
+        //----image file--------
+        ImageFile imageFile = imageFileService.getImageById(imageId);
+
+       Integer count = studentRepository.findStudentCountByImageId(imageFile.getId());
+        if (count>0){
+            throw  new ConflictException(ErrorMessage.IMAGE_USED_EXCEPTION);
+        }
+         Set<ImageFile> imfiles = new HashSet<>();
+        imfiles.add(imageFile);
+        student.setIamges(imfiles);
+
 
         studentRepository.save(student);
 
@@ -145,5 +162,10 @@ public class StudentService {
         Page<Student> students = studentRepository.findAllByDepartmentId(departmentId, pageable);
         return students.map(studentMapper::toStudentDto);
 
+    }
+
+    public Page<StudentDto> getStudentsByFilter(StudentFilter filter, Pageable pageable) {
+        Page<Student> students = studentRepository.findAll(StudentSpecification.build(filter), pageable);
+        return students.map(studentMapper::toStudentDto);
     }
 }
