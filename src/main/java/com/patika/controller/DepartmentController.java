@@ -6,6 +6,7 @@ import com.patika.entity.Department;
 import com.patika.service.DepartmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class DepartmentController {
     }
 
     @PostMapping//("/create")
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public ResponseEntity<PatikaResponse> saveDepartment(@RequestBody DepartmentDto departmentDto){
         departmentService.createDepartment(departmentDto);
 
@@ -56,6 +58,7 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public  ResponseEntity<List<DepartmentDto>> getAll(){
        List<DepartmentDto> departmentDtos =departmentService.getAll();
 

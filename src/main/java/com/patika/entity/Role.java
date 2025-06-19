@@ -2,7 +2,14 @@ package com.patika.entity;
 
 import com.patika.enums.RoleType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -10,6 +17,7 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     private RoleType type;
+
 
     @Override
     public String toString() {

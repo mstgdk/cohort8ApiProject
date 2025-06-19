@@ -5,6 +5,7 @@ import com.patika.dto.request.StudentDto;
 import com.patika.dto.request.StudentWithConnectionDto;
 import com.patika.dto.response.PatikaResponse;
 import com.patika.service.StudentService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RolesAllowed({"ROLE_EMPLOYEE"})
 @RequestMapping("/student")
 public class StudentController {
 
@@ -65,7 +67,7 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
     //PAGEABLE
-    @PreAuthorize("ADMIN_ROLE")
+    //@PreAuthorize("ADMIN_ROLE")
     @GetMapping("/{departmentId}")
     public ResponseEntity<Page<StudentDto>> getAllStudentsByDepartmentId(@PathVariable Long departmentId,
                                                                          @RequestParam("page") int page,

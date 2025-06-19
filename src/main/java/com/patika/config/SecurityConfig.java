@@ -54,7 +54,7 @@ public class SecurityConfig {
             "swagger-ui.html", //swagger
             "/swagger-ui/**", // swagger
             "/",
-            //"/student/**",
+            //"/student/**"
     };
     @Bean
     public PasswordEncoder passwordEncoder() {
